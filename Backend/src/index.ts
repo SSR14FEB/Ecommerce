@@ -1,13 +1,21 @@
-import express from 'express'
-const app = express();
- app.get('/',(req,res)=>{
-    res.json({
-        "status":"200",
-        "massage":"backend setup is completed"
-    })
+import app from './app'
+import dbConnection from './database/index'
+
+import dotenv from 'dotenv'
+dotenv.config({
+   path:'./.env'
 })
 
-app.listen(3000,()=>{
-    console.log("hello backend")
+app.use('/',(req,res)=>{
+    res.send("<h1>hello backend </h1>")
 })
-console.log("testing backend setup");
+
+dbConnection()
+.then(()=>{
+    app.listen(`${process.env.PORT}`,()=>{
+        console.log(`Express app is listing at ${process.env.PORT}`)
+    })
+})
+.catch(()=>{
+    console.log(`Got an error while listening on ${process.env.PORT}` )
+})
