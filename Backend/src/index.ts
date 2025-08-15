@@ -1,7 +1,7 @@
 import app from './app'
 import dbConnection from './database/index'
-
 import dotenv from 'dotenv'
+
 dotenv.config({
    path:'./.env'
 })

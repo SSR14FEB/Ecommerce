@@ -7,6 +7,8 @@ import mongoose from "mongoose";
   state: string;
   postalCode: number;
   country: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }   
 const addressSchema = new Schema<AddressInterface>(
   {
@@ -43,8 +45,12 @@ interface UserInterface extends Document {
   order: mongoose.Types.ObjectId[];
   wishList: mongoose.Types.ObjectId[];
   isVerified: boolean;
+  refreshToke: string;
+  accessToken: string;
   otp?: number;
   otpExpire?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new Schema<UserInterface>(
@@ -60,7 +66,6 @@ const userSchema = new Schema<UserInterface>(
       type: String,
       required: [true, "Contact number is required"],
       unique: true,
-      index: true,
       trim: true,
       validate: [
         {
@@ -84,9 +89,8 @@ const userSchema = new Schema<UserInterface>(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true,
       lowercase: true,
-      index: true,
+      unique: true,
       trim: true,
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "email is invalid"],
       validate: {
@@ -99,7 +103,7 @@ const userSchema = new Schema<UserInterface>(
         message: `Email is already existed`,
       },
     },
-    addresses: [addressSchema],
+    addresses: {type:[addressSchema],default:[]},
     order: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -117,6 +121,14 @@ const userSchema = new Schema<UserInterface>(
       required: true,
       default: false,
     },
+    refreshToken:{
+      type:String,
+      required:true
+    },
+    accessToken:{
+      type:String,
+      required:true
+    },
     otp: {
       type: Number,
     },
@@ -128,4 +140,4 @@ const userSchema = new Schema<UserInterface>(
   { timestamps: true }
 );
 
-export const User = mongoose.model("User",userSchema)
+export const User = mongoose.model<UserInterface>("User",userSchema)
