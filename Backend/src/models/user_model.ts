@@ -1,7 +1,14 @@
 import { Document, Schema } from "mongoose";
 import mongoose from "mongoose";
 
-const addressSchema = new Schema(
+ interface AddressInterface{
+  street: string;
+  city: string;
+  state: string;
+  postalCode: number;
+  country: string;
+}   
+const addressSchema = new Schema<AddressInterface>(
   {
     street: {
       type: String,
@@ -27,7 +34,20 @@ const addressSchema = new Schema(
   { timestamps: true }
 );
 
-const userSchema = new Schema(
+interface UserInterface extends Document {
+  name: string;
+  avatar?: string;
+  contactNumber: string;
+  email: string;
+  addresses: AddressInterface[];
+  order: mongoose.Types.ObjectId[];
+  wishList: mongoose.Types.ObjectId[];
+  isVerified: boolean;
+  otp?: number;
+  otpExpire?: Date;
+}
+
+const userSchema = new Schema<UserInterface>(
   {
     name: {
       type: String,
