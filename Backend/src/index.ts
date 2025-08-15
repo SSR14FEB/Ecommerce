@@ -6,10 +6,6 @@ dotenv.config({
    path:'./.env'
 })
 
-app.use('/',(req,res)=>{
-    res.send("<h1>hello backend </h1>")
-})
-
 dbConnection()
 .then(()=>{
     app.listen(`${process.env.PORT}`,()=>{
