@@ -1,7 +1,8 @@
 import { Document, Schema } from "mongoose";
 import mongoose from "mongoose";
+import { Product } from "./product_model";
 
- interface AddressInterface{
+interface AddressInterface {
   street: string;
   city: string;
   state: string;
@@ -9,7 +10,7 @@ import mongoose from "mongoose";
   country: string;
   createdAt?: Date;
   updatedAt?: Date;
-}   
+}
 const addressSchema = new Schema<AddressInterface>(
   {
     street: {
@@ -42,10 +43,11 @@ interface UserInterface extends Document {
   contactNumber: string;
   email: string;
   addresses: AddressInterface[];
+  cart: mongoose.Types.ObjectId[];
   order: mongoose.Types.ObjectId[];
   wishList: mongoose.Types.ObjectId[];
   isVerified: boolean;
-  refreshToke: string;
+  refreshToken: string;
   accessToken: string;
   otp?: number;
   otpExpire?: Date;
@@ -76,7 +78,7 @@ const userSchema = new Schema<UserInterface>(
           message: `number is not valid`,
         },
         {
-          validator: async function (this:Document, num: string) {
+          validator: async function (this: Document, num: string) {
             const isExisted = await mongoose.models.User.findOne({
               contactNumber: num,
             });
@@ -103,41 +105,44 @@ const userSchema = new Schema<UserInterface>(
         message: `Email is already existed`,
       },
     },
-    addresses: {type:[addressSchema],default:[]},
-    order: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Order",
-      },
-    ],
-    wishList: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
+    addresses: { type: [addressSchema], default: [] },
+    cart: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Product",
+      default: [],
+    },
+    order: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Order",
+      default: [],
+    },
+    wishList: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Product",
+      default: [],
+    },
     isVerified: {
       type: Boolean,
       required: true,
       default: false,
     },
-    refreshToken:{
-      type:String,
-      required:true
+    refreshToken: {
+      type: String,
+      required: true,
     },
-    accessToken:{
-      type:String,
-      required:true
+    accessToken: {
+      type: String,
+      required: true,
     },
     otp: {
       type: Number,
     },
     otpExpire: {
       type: Date,
-      index: { expires: 300 },
+      expires: 300,
     },
   },
   { timestamps: true }
 );
 
-export const User = mongoose.model<UserInterface>("User",userSchema)
+export const User = mongoose.model<UserInterface>("User", userSchema);
