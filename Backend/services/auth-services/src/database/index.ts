@@ -1,4 +1,4 @@
-import mongoose, { Document, model } from "mongoose";
+import mongoose from "mongoose"
 
 const dbConnection = async():Promise<typeof mongoose | undefined> =>{
     try {
